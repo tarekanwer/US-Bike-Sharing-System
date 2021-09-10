@@ -1,2 +1,3 @@
 # US-Bike-Sharing-system
 Data Analysis of Bike sharing system
+US bike sharing system project aims to analyze the data of 3 different cities in US using python programming language. the project shows some insights about the users ages ,gender and birthday. Moreover, it shows the most common used start and end stations and the most frequent trip. In addition, some statistics over the trip time was handled showing the largest and the mean time trip , the peak hour of usage and the common week day. the supplied code provide the calculations in less than 0.5 second while handling a csv of 300,000 trip data for each city.
