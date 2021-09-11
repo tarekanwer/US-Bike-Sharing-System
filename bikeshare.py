@@ -1,5 +1,6 @@
 import time
 import pandas as pd
+from sys import exit
 
 CITY_DATA = { 'chicago': 'chicago.csv',
               'new york city': 'new_york_city.csv',
@@ -16,22 +17,35 @@ def get_filters():
     print('Hello! Let\'s explore some US bikeshare data!')
     # TO DO: get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
     while True:
-        city = input('Enter the city name : ')
+        city = input('Enter the city name : ').lower()
         if city in CITY_DATA.keys():
             break
         else:
-            print('Enter a valid name about data provided')
+            print('Enter a valid name for the city from the list {}'.format(CITY_DATA.keys()))
     
     if city == 'washington':
         tri = 1
     else:
         tri = 0
     # TO DO: get user input for month (all, january, february, ... , june)
-    month = input('Enter the month name : ')
+    months = ['january', 'february', 'march', 'april', 'may', 'june','all']
+    
+    while True:
+        month = input('Enter the month name : ').lower()
+        if month in months:
+            break
+        else:
+            print('Enter a vaild month from the list {}'.format(months))
         
 
     # TO DO: get user input for day of week (all, monday, tuesday, ... sunday)
-    day = input('Enter the day name : ')
+    days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday','all']
+    while True:    
+        day = input('Enter the day name : ').lower()
+        if day in days:
+            break
+        else:
+            print('Enter a vaild name from the list {}'.format(days))
 
 
     print('-'*40)
@@ -145,15 +159,42 @@ def trip_duration_stats(df):
     
     
     total_travel_time = df['Trip Duration'].sum()
+    # defining seconds per day
+    spd = 24*3600 
+    # defining seconds per hour 
+    sph = 3600
+    # defining seconds per minutes 
+    spm = 60   
+    # estimating the days in total travel time 
+    d = total_travel_time // spd    
+    # estimating hours ramining from the previous calc    
+    h = (total_travel_time%spd)//sph
+    #estimating minutes remining 
+    m = (total_travel_time%sph)//spm
+    #estimating seconds 
+    s = (total_travel_time%spm)//1
     
-    print('Total travel time is {} days'.format(total_travel_time/(24*3600)))
+    # rough estimation check 
+    #rough = d * spd + h * sph + m * spm
+    #print('total estiamtion is {}'.format(rough))
+    #print('actual estimaiton is {}'.format(total_travel_time))
+    
+    t = (d,h,m,s)
+    
+    print('Total travel time is {} days, {} hours , {} minutes and {} seconds'.format(*t))
 
 
     # TO DO: display mean travel time
     
     mean_travel_time = df['Trip Duration'].mean()
+    # calculating the mean minutes 
+    mm = mean_travel_time // spm
+    #calcuating the mean seconds
+    ms = (mean_travel_time%spm)//1
     
-    print('the mean travel time is {} minutes'.format(mean_travel_time/60))
+    tt = (mm,ms)
+    
+    print('the mean travel time is {} minutes and {} seconds'.format(*tt))
 
 
     print("\nThis took %s seconds." % (time.time() - start_time))
@@ -190,14 +231,33 @@ def user_stats(df,tri):
     print('-'*40)
 
 
+def cont():
+    # this function aims stops the program when needed 
+    prom = ['yes','no']
+    while True :
+        user_input = input('Do you wish to proceed with analysis ? Enter yes or no : ').lower()
+        if user_input in prom:
+            break
+        else:
+            print('Enter a valid command from the following {}'.format(prom))
+    
+    if user_input =='no' :
+        exit()
+        
+    
 def main():
     while True:
         city, month, day , tri = get_filters()
         df = load_data(city, month, day)
-
         time_stats(df)
+        print('the following analysis displays statistics on the most popular stations and trip.')
+        cont()
         station_stats(df)
+        print('the following analysis displays statistics on the total and average trip duration.')
+        cont()
         trip_duration_stats(df)
+        print('the following analysis displays statistics on bikeshare users.')
+        cont()
         user_stats(df,tri)
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
